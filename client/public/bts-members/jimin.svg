@@ -1,0 +1,25 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="jiminGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6B21A8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4a0e8f;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="58" fill="url(#jiminGrad)" stroke="#e0b0ff" stroke-width="2"/>
+  <!-- Head -->
+  <circle cx="60" cy="38" r="18" fill="#e8c4a0"/>
+  <!-- Hair - silver/lavender, styled -->
+  <path d="M40 32 Q42 12 60 10 Q78 12 80 32 L80 26 Q76 8 60 6 Q44 8 40 26 Z" fill="#e0b0ff"/>
+  <path d="M80 32 Q82 28 84 32" fill="#e0b0ff"/>
+  <!-- Body - elegant -->
+  <path d="M42 56 Q42 52 48 50 L60 48 L72 50 Q78 52 78 56 L80 82 Q80 86 75 86 L45 86 Q40 86 40 82 Z" fill="#1a0a2e"/>
+  <!-- V-neck detail -->
+  <path d="M52 50 L60 58 L68 50" fill="none" stroke="#e0b0ff" stroke-width="1"/>
+  <!-- Eyes - gentle -->
+  <ellipse cx="52" cy="36" rx="2.5" ry="3" fill="#1a0a0a"/>
+  <ellipse cx="68" cy="36" rx="2.5" ry="3" fill="#1a0a0a"/>
+  <!-- Gentle smile -->
+  <path d="M54 42 Q60 46 66 42" fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"/>
+  <!-- Label -->
+  <text x="60" y="108" font-family="Arial" font-size="15" font-weight="bold" fill="#e0b0ff" text-anchor="middle">JIMIN</text>
+</svg>

@@ -1,0 +1,22 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="jinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7c3db8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4a0e8f;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="58" fill="url(#jinGrad)" stroke="#ff69b4" stroke-width="2"/>
+  <!-- Head -->
+  <circle cx="60" cy="38" r="18" fill="#e8c4a0"/>
+  <!-- Hair -->
+  <path d="M40 32 Q42 14 60 12 Q78 14 80 32 L80 26 Q76 10 60 8 Q44 10 40 26 Z" fill="#1a0a0a"/>
+  <!-- Body -->
+  <path d="M42 56 Q42 52 48 50 L60 48 L72 50 Q78 52 78 56 L80 82 Q80 86 75 86 L45 86 Q40 86 40 82 Z" fill="#2d0a4e"/>
+  <!-- Smile -->
+  <path d="M52 42 Q60 48 68 42" fill="none" stroke="#333" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- Eyes -->
+  <ellipse cx="52" cy="36" rx="2.5" ry="3" fill="#1a0a0a"/>
+  <ellipse cx="68" cy="36" rx="2.5" ry="3" fill="#1a0a0a"/>
+  <!-- Label -->
+  <text x="60" y="108" font-family="Arial" font-size="16" font-weight="bold" fill="#ff69b4" text-anchor="middle">JIN</text>
+</svg>

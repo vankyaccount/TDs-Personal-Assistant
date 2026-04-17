@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: tds-postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: tduser
+      POSTGRES_PASSWORD: tdpassword
+      POSTGRES_DB: tdsassistant
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tduser"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tds-network
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: tds-server
+    environment:
+      PORT: 3001
+      DATABASE_URL: postgresql://tduser:tdpassword@postgres:5432/tdsassistant
+      JWT_SECRET: ${JWT_SECRET:-tds-jwt-secret-change-in-production}
+      GLM_API_KEY: ${GLM_API_KEY}
+      GLM_API_URL: https://api.z.ai/api/paas/v4/chat/completions
+      GLM_MODEL: glm-4.7
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      TAVILY_API_KEY: ${TAVILY_API_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - tds-network
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: tds-client
+    ports:
+      - "3000:80"
+    depends_on:
+      - server
+    restart: unless-stopped
+    networks:
+      - tds-network
+
+volumes:
+  postgres_data:
+
+networks:
+  tds-network:
+    driver: bridge

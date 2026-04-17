@@ -1,0 +1,21 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sugaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a0e8f;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3B0764;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="58" fill="url(#sugaGrad)" stroke="#a0d2db" stroke-width="2"/>
+  <!-- Head -->
+  <circle cx="60" cy="38" r="18" fill="#d4a574"/>
+  <!-- Hair - mint/light colored, messy -->
+  <path d="M38 34 Q40 12 60 10 Q80 12 82 34 L82 28 Q78 8 60 6 Q42 8 38 28 Z" fill="#a0d2db"/>
+  <path d="M38 34 L36 30 Q38 26 42 28" fill="#a0d2db"/>
+  <!-- Body - casual hoodie -->
+  <path d="M42 56 Q42 52 48 50 L60 48 L72 50 Q78 52 78 56 L80 82 Q80 86 75 86 L45 86 Q40 86 40 82 Z" fill="#1a1a2e"/>
+  <!-- Eyes - slightly sleepy -->
+  <line x1="49" y1="36" x2="55" y2="36" stroke="#1a0a0a" stroke-width="2" stroke-linecap="round"/>
+  <line x1="65" y1="36" x2="71" y2="36" stroke="#1a0a0a" stroke-width="2" stroke-linecap="round"/>
+  <!-- Label -->
+  <text x="60" y="108" font-family="Arial" font-size="15" font-weight="bold" fill="#a0d2db" text-anchor="middle">SUGA</text>
+</svg>
