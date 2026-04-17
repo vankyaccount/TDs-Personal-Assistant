@@ -18,8 +18,7 @@ RUN npm run build
 # ---- Stage 3: Production ----
 FROM node:22-alpine
 
-# Install nginx + openssl (needed by Prisma)
-RUN apk add --no-cache nginx openssl
+RUN apk add --no-cache openssl
 
 # --- Setup server ---
 WORKDIR /app/server
@@ -36,14 +35,8 @@ COPY --from=server-build /app/server/tsconfig.json ./
 # Prisma CLI for runtime migrations
 RUN npm install prisma
 
-# --- Setup client ---
-COPY --from=client-build /app/client/dist /usr/share/nginx/html
-
-# --- Nginx config ---
-COPY nginx.conf /etc/nginx/http.d/default.conf
-
-# Ensure nginx pid/log dirs exist
-RUN mkdir -p /run/nginx /var/log/nginx
+# --- Copy client build to where server expects it ---
+COPY --from=client-build /app/client/dist ../client/dist
 
 # --- Entrypoint ---
 COPY entrypoint.sh /app/entrypoint.sh
