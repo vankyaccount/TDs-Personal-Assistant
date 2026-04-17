@@ -8,9 +8,9 @@ echo "[1/3] Syncing database schema..."
 cd /app/server
 npx prisma db push --skip-generate 2>/dev/null || true
 
-# Start Node.js server in background
+# Start Node.js server in background (force port 3001 — nginx uses PORT)
 echo "[2/3] Starting API server on port 3001..."
-node dist/index.js &
+PORT=3001 node dist/index.js &
 
 # Wait for server to be ready
 echo "[3/3] Waiting for API server..."
