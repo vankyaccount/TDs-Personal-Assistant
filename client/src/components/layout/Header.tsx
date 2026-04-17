@@ -1,7 +1,7 @@
 import { useAuthStore } from '../../stores/authStore';
-import { LogOut, User } from 'lucide-react';
+import { LogOut, User, Menu } from 'lucide-react';
 
-export default function Header() {
+export default function Header({ onToggleSidebar }: { onToggleSidebar: () => void }) {
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
 
@@ -11,15 +11,21 @@ export default function Header() {
   };
 
   return (
-    <header className="h-16 bg-surface border-b border-border flex items-center justify-between px-6">
-      <div>
-        <h2 className="text-lg font-semibold text-text">Welcome back, {user?.name || 'User'}</h2>
+    <header className="h-16 bg-surface border-b border-border flex items-center justify-between px-4 md:px-6">
+      <div className="flex items-center gap-3">
+        <button
+          onClick={onToggleSidebar}
+          className="p-2 hover:bg-surface-hover rounded-lg text-text-muted md:hidden"
+        >
+          <Menu size={20} />
+        </button>
+        <h2 className="text-lg font-semibold text-text truncate">Welcome back, {user?.name || 'User'}</h2>
       </div>
 
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2 text-sm text-text-muted">
+      <div className="flex items-center gap-2 md:gap-4">
+        <div className="hidden sm:flex items-center gap-2 text-sm text-text-muted">
           <User size={18} />
-          <span>{user?.email}</span>
+          <span className="truncate">{user?.email}</span>
         </div>
 
         <button

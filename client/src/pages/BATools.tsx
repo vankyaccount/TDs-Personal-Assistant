@@ -19,6 +19,7 @@ export default function BATools() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState('');
+  const [error, setError] = useState('');
 
   const token = useAuthStore((s) => s.token);
 
@@ -28,6 +29,7 @@ export default function BATools() {
     if (!selectedTool || !input.trim()) return;
 
     setLoading(true);
+    setError('');
     try {
       const res = await fetch(`/api/ba-tools/${selectedTool}`, {
         method: 'POST',
@@ -37,9 +39,12 @@ export default function BATools() {
       if (res.ok) {
         const data = await res.json();
         setResult(data.content);
+      } else {
+        setError('Generation failed. Please try again.');
       }
     } catch (err) {
       console.error('Generation failed:', err);
+      setError('Network error. Please check your connection.');
     } finally {
       setLoading(false);
     }
@@ -48,6 +53,12 @@ export default function BATools() {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-gradient">BA/PM Tools</h1>
+
+      {error && (
+        <div className="p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200 text-sm">
+          {error}
+        </div>
+      )}
 
       <div className="grid lg:grid-cols-2 gap-6">
         <div className="space-y-4">

@@ -5,7 +5,7 @@ generator client {
 // LOCAL DEV: sqlite — run with: DATABASE_URL="file:./dev.db" npx prisma db push
 // PRODUCTION: change provider to "postgresql" (or use schema.prod.prisma)
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

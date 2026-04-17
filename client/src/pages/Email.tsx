@@ -16,11 +16,13 @@ export default function Email() {
   const [loading, setLoading] = useState(false);
   const [draft, setDraft] = useState<{ subject: string; body: string } | null>(null);
   const [copied, setCopied] = useState(false);
+  const [error, setError] = useState('');
 
   const token = useAuthStore((s) => s.token);
 
   const generateDraft = async () => {
     setLoading(true);
+    setError('');
     try {
       const res = await fetch('/api/email/draft', {
         method: 'POST',
@@ -29,9 +31,12 @@ export default function Email() {
       });
       if (res.ok) {
         setDraft(await res.json());
+      } else {
+        setError('Failed to generate email. Please try again.');
       }
     } catch (err) {
       console.error('Failed to generate draft:', err);
+      setError('Network error. Please check your connection.');
     } finally {
       setLoading(false);
     }
@@ -50,6 +55,11 @@ export default function Email() {
       <h1 className="text-2xl font-bold text-gradient">Email Drafter</h1>
 
       <div className="grid lg:grid-cols-2 gap-6">
+        {error && (
+          <div className="lg:col-span-2 p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200 text-sm">
+            {error}
+          </div>
+        )}
         <div className="space-y-4">
           <div className="card bg-surface border-border">
             <h3 className="font-semibold text-text mb-3 flex items-center gap-2">

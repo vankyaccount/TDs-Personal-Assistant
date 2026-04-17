@@ -12,6 +12,8 @@ WORKDIR /app/server
 COPY server/package*.json ./
 RUN npm ci
 COPY server/ .
+# Use production schema (postgresql) for Docker build
+RUN cp prisma/schema.prod.prisma prisma/schema.prisma
 RUN npx prisma generate
 RUN npm run build
 
@@ -34,6 +36,9 @@ COPY --from=server-build /app/server/tsconfig.json ./
 
 # Prisma CLI for runtime migrations
 RUN npm install prisma
+
+# Create uploads directory for meeting audio files
+RUN mkdir -p /app/server/uploads
 
 # --- Copy client build to where server expects it ---
 COPY --from=client-build /app/client/dist ../client/dist

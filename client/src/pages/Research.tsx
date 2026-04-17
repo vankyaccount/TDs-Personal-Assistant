@@ -10,6 +10,7 @@ export default function Research() {
   const [depth, setDepth] = useState<'quick' | 'deep'>('quick');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{ topic: string; content: string } | null>(null);
+  const [error, setError] = useState('');
 
   const token = useAuthStore((s) => s.token);
 
@@ -17,6 +18,7 @@ export default function Research() {
     if (!topic.trim()) return;
 
     setLoading(true);
+    setError('');
     try {
       const res = await fetch('/api/research', {
         method: 'POST',
@@ -25,9 +27,12 @@ export default function Research() {
       });
       if (res.ok) {
         setResult(await res.json());
+      } else {
+        setError('Research failed. Please try again.');
       }
     } catch (err) {
       console.error('Research failed:', err);
+      setError('Network error. Please check your connection.');
     } finally {
       setLoading(false);
     }
@@ -36,6 +41,12 @@ export default function Research() {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-gradient">AI Research Assistant</h1>
+
+      {error && (
+        <div className="p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200 text-sm">
+          {error}
+        </div>
+      )}
 
       <div className="card bg-surface border-border">
         <h3 className="font-semibold text-text mb-3 flex items-center gap-2">

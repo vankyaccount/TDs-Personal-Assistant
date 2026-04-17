@@ -102,8 +102,8 @@ export default function Chat() {
       if (member) {
         messagesToSend.unshift({
           id: 'system',
-          role: 'assistant' as any,
-          content: `System: ${member.systemPrompt}`,
+          role: 'system' as any,
+          content: member.systemPrompt,
           createdAt: new Date().toISOString(),
         } as any);
       }
@@ -205,8 +205,8 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex gap-4 h-[calc(100vh-8rem)]">
-      <div className="w-72 bg-surface rounded-lg border border-border flex flex-col">
+    <div className="flex flex-col md:flex-row gap-4 h-[calc(100vh-8rem)]">
+      <div className="hidden md:flex w-64 lg:w-72 bg-surface rounded-lg border border-border flex-col flex-shrink-0">
         <div className="p-4 border-b border-border flex items-center justify-between">
           <h3 className="font-semibold text-text">Conversations</h3>
           <button

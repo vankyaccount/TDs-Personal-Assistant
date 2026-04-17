@@ -35,8 +35,14 @@ router.post('/', authenticate, async (req: AuthRequest, res: Response) => {
     res.setHeader('Connection', 'keep-alive');
     res.setHeader('X-Conversation-Id', convo.id);
 
+    // Sanitize messages for GLM API (only role + content)
+    const cleanMessages = messages.map((m: any) => ({
+      role: m.role,
+      content: m.content,
+    }));
+
     // Stream from GLM
-    const stream = await streamChatCompletion(messages);
+    const stream = await streamChatCompletion(cleanMessages);
     if (!stream) {
       res.write(`data: ${JSON.stringify({ error: 'No stream' })}\n\n`);
       res.end();

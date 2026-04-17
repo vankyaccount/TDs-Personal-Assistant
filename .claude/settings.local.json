@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:api.tavily.com)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(powershell -command \"Get-PSDrive C | Select-Object @{N=''Used_GB'';E={[math]::Round\\($_.Used/1GB,1\\)}}, @{N=''Free_GB'';E={[math]::Round\\($_.Free/1GB,1\\)}}\")",
+      "Bash(powershell -File:*)",
+      "Bash(dir:*)",
+      "Bash(wmic computersystem get:*)",
+      "Bash(systeminfo:*)",
+      "Bash(powercfg:*)",
+      "Bash(cmd /c \"powercfg /hibernate off\")",
+      "Bash(powershell -Command:*)",
+      "Bash(wsl --list:*)",
+      "Bash(docker:*)",
+      "Bash(cmd /c \"start \"\"\"\" \"\"C:\\\\Program Files\\\\Docker\\\\Docker\\\\Docker Desktop.exe\"\"\")",
+      "Bash(taskkill:*)",
+      "Bash(DISM /Online /Cleanup-Image /SPSuperseded:*)",
+      "Bash(cmd /c \"DISM /Online /Cleanup-Image /SPSuperseded 2>&1\")",
+      "Bash(openssl rand:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "WebFetch(domain:en.wikipedia.org)",
+      "WebFetch(domain:bts.fandom.com)",
+      "Bash(curl:*)",
+      "Bash(python3:*)",
+      "Bash(cat:*)"
+    ]
+  }
+}

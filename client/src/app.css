@@ -193,3 +193,15 @@ h1, h2, h3, h4, h5, h6 {
 .input-field::placeholder {
   color: var(--color-lavender);
 }
+
+/* Fix select/dropdown dark theme */
+select.input-field {
+  background-color: var(--color-bg-deep);
+  color: var(--color-cream);
+}
+
+select.input-field option {
+  background-color: var(--color-bg-deep);
+  color: var(--color-cream);
+  padding: 0.5rem;
+}

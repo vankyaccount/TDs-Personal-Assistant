@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Calendar, Flag } from 'lucide-react';
+import { Plus, Trash2, Calendar, Flag, Check, Circle } from 'lucide-react';
 import { DndContext, DragEndEvent, DragOverlay, closestCenter } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useAuthStore } from '../stores/authStore';
@@ -14,7 +14,7 @@ const quadrants = [
   { id: 4, title: 'Eliminate', desc: 'Not Urgent & Not Important', color: 'gray' },
 ];
 
-function TaskCard({ task, onDelete }: { task: TaskType; onDelete: (id: string) => void }) {
+function TaskCard({ task, onDelete, onToggleStatus }: { task: TaskType; onDelete: (id: string) => void; onToggleStatus: (id: string, status: string) => void }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: task.id,
   });
@@ -27,32 +27,44 @@ function TaskCard({ task, onDelete }: { task: TaskType; onDelete: (id: string) =
       }
     : undefined;
 
+  const isCompleted = task.status === 'completed';
+
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <div className="bg-surface rounded-lg p-3 border border-border hover:border-bts-purple/50 cursor-move mb-2">
+      <div className={`bg-surface rounded-lg p-3 border border-border hover:border-bts-purple/50 cursor-move mb-2 ${isCompleted ? 'opacity-60' : ''}`}>
         <div className="flex items-start justify-between gap-2">
-          <div className="flex-1">
-            <h4 className="font-medium text-text text-sm">{task.title}</h4>
-            {task.description && <p className="text-xs text-text-muted mt-1">{task.description}</p>}
-            <div className="flex items-center gap-2 mt-2">
-              <span className={`text-xs px-2 py-0.5 rounded ${
-                task.priority === 'high' ? 'bg-red-500/20 text-red-200' :
-                task.priority === 'medium' ? 'bg-gold/20 text-gold' :
-                'bg-lavender/20 text-lavender'
-              }`}>
-                <Flag size={10} className="inline mr-1" />
-                {task.priority}
-              </span>
-              {task.dueDate && (
-                <span className="text-xs text-text-muted flex items-center">
-                  <Calendar size={10} className="mr-1" />
-                  {new Date(task.dueDate).toLocaleDateString()}
+          <div className="flex items-start gap-2 flex-1">
+            <button
+              onClick={(e) => { e.stopPropagation(); onToggleStatus(task.id, isCompleted ? 'pending' : 'completed'); }}
+              className={`mt-0.5 p-0.5 rounded-full transition-colors flex-shrink-0 ${
+                isCompleted ? 'text-green-400 hover:text-green-300' : 'text-text-muted hover:text-bts-purple'
+              }`}
+            >
+              {isCompleted ? <Check size={16} className="fill-current" /> : <Circle size={16} />}
+            </button>
+            <div className="flex-1">
+              <h4 className={`font-medium text-sm ${isCompleted ? 'line-through text-text-muted' : 'text-text'}`}>{task.title}</h4>
+              {task.description && <p className="text-xs text-text-muted mt-1">{task.description}</p>}
+              <div className="flex items-center gap-2 mt-2">
+                <span className={`text-xs px-2 py-0.5 rounded ${
+                  task.priority === 'high' ? 'bg-red-500/20 text-red-200' :
+                  task.priority === 'medium' ? 'bg-gold/20 text-gold' :
+                  'bg-lavender/20 text-lavender'
+                }`}>
+                  <Flag size={10} className="inline mr-1" />
+                  {task.priority}
                 </span>
-              )}
+                {task.dueDate && (
+                  <span className="text-xs text-text-muted flex items-center">
+                    <Calendar size={10} className="mr-1" />
+                    {new Date(task.dueDate).toLocaleDateString()}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
           <button
-            onClick={() => onDelete(task.id)}
+            onClick={(e) => { e.stopPropagation(); onDelete(task.id); }}
             className="p-1 hover:bg-red-500/20 rounded transition-colors text-text-muted hover:text-red-400"
           >
             <Trash2 size={14} />
@@ -115,6 +127,22 @@ export default function Tasks() {
       deleteTask(id);
     } catch (err) {
       console.error('Failed to delete task:', err);
+    }
+  };
+
+  const handleToggleStatus = async (id: string, status: string) => {
+    try {
+      const res = await fetch(`/api/tasks/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ status }),
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        updateTask(id, { status: updated.status });
+      }
+    } catch (err) {
+      console.error('Failed to update task status:', err);
     }
   };
 
@@ -200,7 +228,7 @@ export default function Tasks() {
       </AnimatePresence>
 
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {quadrants.map((q) => (
             <div key={q.id} className="bg-surface rounded-lg border border-border overflow-hidden">
               <div
@@ -221,7 +249,7 @@ export default function Tasks() {
                 >
                   <AnimatePresence>
                     {getTasksByQuadrant(q.id).map((task) => (
-                      <TaskCard key={task.id} task={task} onDelete={handleDelete} />
+                      <TaskCard key={task.id} task={task} onDelete={handleDelete} onToggleStatus={handleToggleStatus} />
                     ))}
                   </AnimatePresence>
                 </SortableContext>

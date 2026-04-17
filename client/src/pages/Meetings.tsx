@@ -9,6 +9,7 @@ export default function Meetings() {
   const [structuring, setStructuring] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [structured, setStructured] = useState<any>(null);
+  const [error, setError] = useState('');
 
   const token = useAuthStore((s) => s.token);
 
@@ -20,6 +21,7 @@ export default function Meetings() {
     if (!file) return;
 
     setTranscribing(true);
+    setError('');
     const formData = new FormData();
     formData.append('audio', file);
 
@@ -32,9 +34,12 @@ export default function Meetings() {
       if (res.ok) {
         const data = await res.json();
         setTranscript(data.transcript);
+      } else {
+        setError('Transcription failed. Please try again.');
       }
     } catch (err) {
       console.error('Transcription failed:', err);
+      setError('Network error. Please check your connection.');
     } finally {
       setTranscribing(false);
     }
@@ -44,6 +49,7 @@ export default function Meetings() {
     if (!transcript) return;
 
     setStructuring(true);
+    setError('');
     try {
       const res = await fetch('/api/meetings/structure', {
         method: 'POST',
@@ -52,9 +58,12 @@ export default function Meetings() {
       });
       if (res.ok) {
         setStructured(await res.json());
+      } else {
+        setError('Structuring failed. Please try again.');
       }
     } catch (err) {
       console.error('Structuring failed:', err);
+      setError('Network error. Please check your connection.');
     } finally {
       setStructuring(false);
     }
@@ -63,6 +72,12 @@ export default function Meetings() {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-gradient">Meeting Notes</h1>
+
+      {error && (
+        <div className="p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200 text-sm">
+          {error}
+        </div>
+      )}
 
       <div className="grid lg:grid-cols-2 gap-6">
         <div className="space-y-4">
@@ -98,7 +113,7 @@ export default function Meetings() {
                 </label>
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex gap-3 items-center">
                 <button
                   onClick={transcribe}
                   disabled={!file || transcribing}
@@ -110,9 +125,9 @@ export default function Meetings() {
                 <button
                   onClick={structure}
                   disabled={!transcript || structuring}
-                  className="flex-1 btn-gold py-3 flex items-center justify-center gap-2"
+                  className="btn-gold px-4 py-2 flex items-center justify-center gap-2 text-sm"
                 >
-                  {structuring ? <Loader2 size={20} className="animate-spin" /> : <FileText size={20} />}
+                  {structuring ? <Loader2 size={16} className="animate-spin" /> : <FileText size={16} />}
                   Structure Notes
                 </button>
               </div>
