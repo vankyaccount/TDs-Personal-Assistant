@@ -49,6 +49,6 @@ RUN mkdir -p /run/nginx /var/log/nginx
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
-EXPOSE 80
+EXPOSE 3000
 
 CMD ["/app/entrypoint.sh"]

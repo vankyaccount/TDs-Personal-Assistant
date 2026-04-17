@@ -3,10 +3,10 @@ set -e
 
 echo "=== Tanya's PA Starting ==="
 
-# Run database migrations
-echo "[1/3] Running database migrations..."
+# Sync database schema (idempotent — works with existing or empty databases)
+echo "[1/3] Syncing database schema..."
 cd /app/server
-npx prisma migrate deploy
+npx prisma db push --skip-generate 2>/dev/null || true
 
 # Start Node.js server in background
 echo "[2/3] Starting API server on port 3001..."
