@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import {
   MessageSquare,
   Mail,
@@ -10,6 +11,7 @@ import {
   Briefcase,
   Sparkles
 } from 'lucide-react';
+import { getRandomQuote } from '../utils/btsQuotes';
 
 const quickLinks = [
   { path: '/chat', label: 'Start Chat', icon: MessageSquare, color: 'bts-purple' },
@@ -22,6 +24,13 @@ const quickLinks = [
 ];
 
 export default function Dashboard() {
+  const [quote, setQuote] = useState(() => getRandomQuote());
+
+  useEffect(() => {
+    // Get a new random quote on mount
+    setQuote(getRandomQuote());
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -74,12 +83,18 @@ export default function Dashboard() {
       </div>
 
       {/* BTS Quote of the Moment */}
-      <div className="card bg-gradient-to-br from-bts-purple/20 to-lavender/20 border-gold/30">
+      <motion.div
+        key={quote.korean}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="card bg-gradient-to-br from-bts-purple/20 to-lavender/20 border-gold/30"
+      >
         <p className="text-center text-text italic korean-accent">
-          "입트면 장난 아니래" — If you bloom, it's no joke
+          "{quote.korean}" — {quote.english}
         </p>
-        <p className="text-center text-xs text-text-muted mt-2">— BTS Message to ARMY</p>
-      </div>
+        <p className="text-center text-xs text-text-muted mt-2">— {quote.source}</p>
+      </motion.div>
     </motion.div>
   );
 }
