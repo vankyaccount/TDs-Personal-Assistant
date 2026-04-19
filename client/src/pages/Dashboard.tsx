@@ -17,7 +17,7 @@ const quickLinks = [
   { path: '/chat', label: 'Start Chat', icon: MessageSquare, color: 'bts-purple' },
   { path: '/email', label: 'Draft Email', icon: Mail, color: 'hot-pink' },
   { path: '/tasks', label: 'View Tasks', icon: CheckSquare, color: 'gold' },
-  { path: '/meetings', label: 'Meeting Notes', icon: Mic, color: 'lavender' },
+  { path: 'https://fifthdraft.ai/', label: 'Meeting Notes', icon: Mic, color: 'lavender', external: true },
   { path: '/research', label: 'Research', icon: Search, color: 'bts-purple' },
   { path: '/news', label: 'BTS News', icon: Newspaper, color: 'hot-pink' },
   { path: '/ba-tools', label: 'BA Tools', icon: Briefcase, color: 'gold' },
@@ -53,12 +53,8 @@ export default function Dashboard() {
 
       {/* Quick Links Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {quickLinks.map((link) => (
-          <Link
-            key={link.path}
-            to={link.path}
-            className="group"
-          >
+        {quickLinks.map((link) => {
+          const linkComponent = (
             <motion.div
               whileHover={{ scale: 1.02, y: -4 }}
               className="card bg-surface border-border hover:border-bts-purple/50"
@@ -78,8 +74,28 @@ export default function Dashboard() {
                 <Sparkles size={16} className="text-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
             </motion.div>
-          </Link>
-        ))}
+          );
+
+          return link.external ? (
+            <a
+              key={link.path}
+              href={link.path}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group"
+            >
+              {linkComponent}
+            </a>
+          ) : (
+            <Link
+              key={link.path}
+              to={link.path}
+              className="group"
+            >
+              {linkComponent}
+            </Link>
+          );
+        })}
       </div>
 
       {/* BTS Quote of the Moment */}
@@ -104,7 +120,7 @@ function getLinkDescription(label: string): string {
     'Start Chat': 'Chat with BTS member personas',
     'Draft Email': 'AI-powered email templates',
     'View Tasks': 'Eisenhower Matrix task manager',
-    'Meeting Notes': 'Transcribe & structure meetings',
+    'Meeting Notes': 'AI-powered meeting transcription',
     'Research': 'Structured AI research',
     'BTS News': 'Latest K-pop headlines',
     'BA Tools': 'PM/BA productivity suite',
