@@ -1,6 +1,5 @@
 import { useTaskStore } from '../../stores/taskStore';
 import CountdownTimer from '../bts/CountdownTimer';
-import MemberSelector from '../bts/MemberSelector';
 
 const KOREAN_WORDS = [
   { korean: '보라해', romanization: 'Borahae', english: 'I purple you / lasting love', btsSong: 'Singularity' },
@@ -42,11 +41,6 @@ export default function RightRail() {
         <CountdownTimer />
       </div>
 
-      {/* Member Selector */}
-      <div className="p-4 border-b border-border">
-        <MemberSelector />
-      </div>
-
       {/* Task Summary */}
       <div className="p-4 border-b border-border">
         <h3 className="text-sm font-semibold text-lavender mb-3">Task Summary</h3>
@@ -72,11 +66,29 @@ export default function RightRail() {
 
       {/* Korean Word of the Day */}
       <div className="p-4 flex-1">
-        <h3 className="text-sm font-semibold text-lavender mb-3">오늘의 단어</h3>
+        <h3 className="text-sm font-semibold text-lavender mb-3">Word of the Day</h3>
         <div className="bg-[#1e0a40] rounded-lg p-4 border border-bts-purple/40 space-y-3">
-          <p className="text-3xl font-bold text-gold text-center">{wordOfDay.korean}</p>
+          <div className="flex items-center justify-center gap-3">
+            <p className="text-3xl font-bold text-gold">{wordOfDay.korean}</p>
+            <button
+              onClick={() => {
+                const utterance = new SpeechSynthesisUtterance(wordOfDay.korean);
+                utterance.lang = 'ko-KR';
+                utterance.rate = 0.8;
+                speechSynthesis.speak(utterance);
+              }}
+              title="Hear pronunciation"
+              className="p-2 rounded-full bg-bts-purple/30 hover:bg-bts-purple/50 text-lavender hover:text-cream transition-colors flex-shrink-0"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+              </svg>
+            </button>
+          </div>
           <div className="space-y-1.5">
-            <p className="text-sm text-lavender"><span className="font-semibold text-cream">Romanization:</span> {wordOfDay.romanization}</p>
+            <p className="text-sm text-lavender"><span className="font-semibold text-cream">Pronunciation:</span> {wordOfDay.romanization}</p>
             <p className="text-sm text-cream"><span className="font-semibold">English:</span> {wordOfDay.english}</p>
             <p className="text-xs text-lavender italic"><span className="font-semibold not-italic text-lavender">From:</span> "{wordOfDay.btsSong}"</p>
           </div>

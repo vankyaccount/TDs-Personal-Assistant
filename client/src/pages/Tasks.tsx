@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Calendar, Flag, Check, Circle } from 'lucide-react';
+import { Plus, Trash2, Calendar, Flag, Check, Circle, GripVertical } from 'lucide-react';
 import { DndContext, DragEndEvent, DragOverlay, closestCenter } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useAuthStore } from '../stores/authStore';
@@ -30,10 +30,14 @@ function TaskCard({ task, onDelete, onToggleStatus }: { task: TaskType; onDelete
   const isCompleted = task.status === 'completed';
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <div className={`bg-surface rounded-lg p-3 border border-border hover:border-bts-purple/50 cursor-move mb-2 ${isCompleted ? 'opacity-60' : ''}`}>
+    <div ref={setNodeRef} style={style} {...attributes}>
+      <div className={`bg-surface rounded-lg p-3 border border-border hover:border-bts-purple/50 mb-2 ${isCompleted ? 'opacity-60' : ''}`}>
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-start gap-2 flex-1">
+            {/* Drag handle — only this receives drag listeners */}
+            <div {...listeners} className="mt-0.5 cursor-grab active:cursor-grabbing text-text-muted hover:text-lavender flex-shrink-0">
+              <GripVertical size={14} />
+            </div>
             <button
               onClick={(e) => { e.stopPropagation(); onToggleStatus(task.id, isCompleted ? 'pending' : 'completed'); }}
               className={`mt-0.5 p-0.5 rounded-full transition-colors flex-shrink-0 ${
