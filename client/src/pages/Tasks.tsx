@@ -8,10 +8,10 @@ import { useTaskStore } from '../stores/taskStore';
 import type { Task as TaskType } from '../types';
 
 const quadrants = [
-  { id: 1, title: 'Do First', desc: 'Urgent & Important', color: 'red' },
-  { id: 2, title: 'Schedule', desc: 'Important & Not Urgent', color: 'gold' },
-  { id: 3, title: 'Delegate', desc: 'Urgent & Not Important', color: 'lavender' },
-  { id: 4, title: 'Eliminate', desc: 'Not Urgent & Not Important', color: 'gray' },
+  { id: 1, title: 'Do First', desc: 'Urgent & Important', headerClass: 'bg-red-500/30 border-red-500/40', titleClass: 'text-red-300' },
+  { id: 2, title: 'Schedule', desc: 'Important & Not Urgent', headerClass: 'bg-gold/20 border-gold/40', titleClass: 'text-gold' },
+  { id: 3, title: 'Delegate', desc: 'Urgent & Not Important', headerClass: 'bg-bts-purple/30 border-bts-purple/50', titleClass: 'text-lavender' },
+  { id: 4, title: 'Eliminate', desc: 'Not Urgent & Not Important', headerClass: 'bg-gray-500/20 border-gray-500/30', titleClass: 'text-gray-400' },
 ];
 
 function TaskCard({ task, onDelete, onToggleStatus }: { task: TaskType; onDelete: (id: string) => void; onToggleStatus: (id: string, status: string) => void }) {
@@ -168,7 +168,8 @@ export default function Tasks() {
     }
   };
 
-  const getTasksByQuadrant = (quadrant: number) => tasks.filter((t) => t.quadrant === quadrant);
+  const getTasksByQuadrant = (quadrant: number) => tasks.filter((t) => t.quadrant === quadrant && t.status !== 'completed');
+  const getCompletedTasks = () => tasks.filter((t) => t.status === 'completed');
 
   return (
     <div className="space-y-4">
@@ -231,15 +232,8 @@ export default function Tasks() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {quadrants.map((q) => (
             <div key={q.id} className="bg-surface rounded-lg border border-border overflow-hidden">
-              <div
-                className={`p-3 bg-${
-                  q.color === 'red' ? 'red-500/20' :
-                  q.color === 'gold' ? 'gold-500/20' :
-                  q.color === 'lavender' ? 'lavender-500/20' :
-                  'gray-500/20'
-                } border-b border-border`}
-              >
-                <h3 className="font-semibold text-text">{q.title}</h3>
+              <div className={`p-3 border-b ${q.headerClass}`}>
+                <h3 className={`font-semibold ${q.titleClass}`}>{q.title}</h3>
                 <p className="text-xs text-text-muted">{q.desc}</p>
               </div>
               <div className="p-3 min-h-[200px]" data-overrides={true} id={q.id.toString()}>
@@ -261,6 +255,46 @@ export default function Tasks() {
           {activeId ? <div className="bg-bts-purple rounded-lg p-3 text-white">Dragging...</div> : null}
         </DragOverlay>
       </DndContext>
+
+      {/* Completed Tasks Section */}
+      {getCompletedTasks().length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-surface rounded-lg border border-border overflow-hidden"
+        >
+          <div className="p-3 bg-green-500/10 border-b border-border">
+            <h3 className="font-semibold text-text">Completed Tasks</h3>
+            <p className="text-xs text-text-muted">{getCompletedTasks().length} task{getCompletedTasks().length !== 1 ? 's' : ''}</p>
+          </div>
+          <div className="p-3 space-y-2">
+            <AnimatePresence>
+              {getCompletedTasks().map((task) => (
+                <motion.div
+                  key={task.id}
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                  className="bg-surface-hover rounded-lg p-3 border border-border hover:border-green-400/50 flex items-center justify-between gap-2"
+                >
+                  <div className="flex-1">
+                    <h4 className="font-medium text-sm line-through text-text-muted">{task.title}</h4>
+                    <p className="text-xs text-text-muted mt-1">
+                      {quadrants.find(q => q.id === task.quadrant)?.title || 'Unknown'}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleToggleStatus(task.id, 'pending')}
+                    className="px-3 py-1.5 rounded text-xs font-medium bg-green-500/20 text-green-300 hover:bg-green-500/30 transition-colors"
+                  >
+                    Restore
+                  </button>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }

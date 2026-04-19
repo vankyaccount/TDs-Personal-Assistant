@@ -6,7 +6,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import { useAuthStore } from '../stores/authStore';
 import { useChatStore } from '../stores/chatStore';
-import { btsMembers } from '../utils/btsData';
+import { btsMembers, getMemberById } from '../utils/btsData';
 import type { Message } from '../types';
 import 'highlight.js/styles/github-dark.css';
 
@@ -265,41 +265,84 @@ export default function Chat() {
             </div>
           ) : (
             <AnimatePresence>
-              {messages.map((msg, idx) => (
-                <motion.div
-                  key={msg.id || idx}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div
-                    className={`max-w-[80%] rounded-lg p-4 ${
-                      msg.role === 'user' ? 'bg-bts-purple text-white' : 'bg-surface-hover text-text'
-                    }`}
+              {messages.map((msg, idx) => {
+                const member = selectedPersona ? getMemberById(selectedPersona) : null;
+                return (
+                  <motion.div
+                    key={msg.id || idx}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
-                    {msg.role === 'assistant' ? (
-                      <ReactMarkdown
-                        remarkPlugins={[remarkGfm]}
-                        rehypePlugins={[rehypeHighlight]}
-                        className="prose prose-invert prose-sm max-w-none"
-                      >
-                        {msg.content}
-                      </ReactMarkdown>
+                    {msg.role === 'assistant' && member ? (
+                      <div className="flex flex-col gap-1 max-w-[85%] sm:max-w-[80%]">
+                        <span className="text-xs font-semibold text-text-muted ml-14" style={{ color: member.accentColor }}>{member.name} says...</span>
+                        <div className="flex gap-2 items-start">
+                          <motion.img
+                            src={member.avatar}
+                            alt={member.name}
+                            className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                            style={{ border: `2px solid ${member.accentColor}` }}
+                            animate={{ y: [0, -4, 0] }}
+                            transition={{ duration: 1.5, repeat: Infinity }}
+                          />
+                          <div
+                            className="rounded-lg p-4 bg-surface-hover text-text flex-1 min-w-0"
+                            style={{ borderLeft: `4px solid ${member.accentColor}` }}
+                          >
+                            <ReactMarkdown
+                              remarkPlugins={[remarkGfm]}
+                              rehypePlugins={[rehypeHighlight]}
+                              className="prose prose-invert prose-sm max-w-none"
+                            >
+                              {msg.content}
+                            </ReactMarkdown>
+                          </div>
+                        </div>
+                      </div>
+                    ) : msg.role === 'assistant' ? (
+                      <div className="rounded-lg p-4 bg-surface-hover text-text max-w-[80%]">
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm]}
+                          rehypePlugins={[rehypeHighlight]}
+                          className="prose prose-invert prose-sm max-w-none"
+                        >
+                          {msg.content}
+                        </ReactMarkdown>
+                      </div>
                     ) : (
-                      <p className="whitespace-pre-wrap">{msg.content}</p>
+                      <div className="max-w-[80%] rounded-lg p-4 bg-bts-purple text-white">
+                        <p className="whitespace-pre-wrap">{msg.content}</p>
+                      </div>
                     )}
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                );
+              })}
               {streaming && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="flex justify-start"
                 >
-                  <div className="bg-surface-hover rounded-lg p-4">
-                    <Loader2 size={20} className="animate-spin text-bts-purple" />
-                  </div>
+                  {selectedPersona && getMemberById(selectedPersona) ? (
+                    <div className="flex gap-2 items-start">
+                      <motion.img
+                        src={getMemberById(selectedPersona)!.avatar}
+                        alt="Typing..."
+                        className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                        style={{ border: `2px solid ${getMemberById(selectedPersona)!.accentColor}` }}
+                        animate={{ y: [0, -4, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                      />
+                      <div className="bg-surface-hover rounded-lg p-4" style={{ borderLeft: `4px solid ${getMemberById(selectedPersona)!.accentColor}` }}>
+                        <Loader2 size={20} className="animate-spin" style={{ color: getMemberById(selectedPersona)!.accentColor }} />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-surface-hover rounded-lg p-4">
+                      <Loader2 size={20} className="animate-spin text-bts-purple" />
+                    </div>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -323,11 +366,8 @@ export default function Chat() {
               <button
                 key={member.id}
                 onClick={() => setSelectedPersona(member.id)}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
-                  selectedPersona === member.id
-                    ? 'bg-bts-purple text-white'
-                    : 'bg-surface hover:bg-surface-hover text-text-muted'
-                }`}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all text-white`}
+                style={selectedPersona === member.id ? { backgroundColor: member.accentColor } : { backgroundColor: 'transparent', color: '#b0b9c3' }}
               >
                 {member.name}
               </button>

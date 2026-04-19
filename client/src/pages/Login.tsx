@@ -123,10 +123,6 @@ export default function Login() {
             </button>
           </div>
 
-          {/* Demo Accounts Notice */}
-          <div className="mt-6 pt-6 border-t border-border text-center text-xs text-text-muted">
-            <p>Demo accounts available</p>
-          </div>
         </div>
       </motion.div>
     </div>

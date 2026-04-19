@@ -37,9 +37,9 @@ export default function CountdownTimer() {
 
       <div className="grid grid-cols-4 gap-2 text-center">
         {Object.entries(timeLeft).map(([unit, value]) => (
-          <div key={unit} className="bg-bts-purple/20 rounded-lg p-2 border border-bts-purple/40">
-            <div className="text-xl font-bold text-bts-purple">{String(value).padStart(2, '0')}</div>
-            <div className="text-xs text-text-muted capitalize">{unit}</div>
+          <div key={unit} className="bg-bts-purple/40 rounded-lg p-2 border border-bts-purple/60">
+            <div className="text-xl font-bold text-gold">{String(value).padStart(2, '0')}</div>
+            <div className="text-xs text-lavender capitalize">{unit}</div>
           </div>
         ))}
       </div>

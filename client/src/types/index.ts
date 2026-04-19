@@ -71,6 +71,7 @@ export interface BTSMember {
   fullName: string;
   role: string;
   avatar: string;
+  accentColor: string;
   systemPrompt: string;
 }
 

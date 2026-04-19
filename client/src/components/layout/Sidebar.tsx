@@ -65,7 +65,7 @@ export default function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose:
         </nav>
 
         <div className="p-4 border-t border-border text-center text-xs text-text-muted">
-          BTS Toronto Concert
+          Borahae ♡
         </div>
       </aside>
 
@@ -96,7 +96,7 @@ export default function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose:
         </nav>
 
         <div className="p-4 border-t border-border text-center text-xs text-text-muted">
-          BTS Toronto Concert
+          Borahae ♡
         </div>
       </aside>
     </>
